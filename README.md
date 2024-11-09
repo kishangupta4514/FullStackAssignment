@@ -4,15 +4,26 @@ A full-stack web application for managing project data, client information, user
 
 ---
 
+## Working
+
+This full-stack application includes a landing page displaying projects, client testimonials, a contact form, and a newsletter subscription. The admin panel allows management of projects, client information, viewing contact form submissions, and tracking newsletter subscribers, with data stored in MongoDB and handled via a backend API. 
+
+## Admin Credentials
+ For Admin login , you have to redirect to this link https://management-app-wheat.vercel.app/login
+- **Email**: `test@gmail.com`
+- **Password**: `test123`
+
+
+---
+
 ## Table of Contents
 
 1. [Features](#features)
 2. [Tech Stack](#tech-stack)
 3. [Installation](#installation)
-4. [Backend Configuration](#backend-configuration)
-5. [Frontend Configuration](#frontend-configuration)
-6. [Deployment](#deployment)
-7. [Future Enhancements](#future-enhancements)
+4. [API Documentation](#api-documentation)
+5. [Deployment](#deployment)
+6. [Future Enhancements](#future-enhancements)
 
 ---
 
@@ -26,7 +37,7 @@ A full-stack web application for managing project data, client information, user
 
 - **Admin Panel**:
   - **Project Management**: Admin can add, view, and delete projects.
-  - **Client Management**: Admin can add, view, and delete client details.
+  - **Client Management**: Admin can add, view, edit, and delete client details.
   - **Contact Submissions**: Admin view of contact form responses.
   - **Newsletter Subscribers**: Admin view of all subscribed emails.
 
@@ -34,7 +45,7 @@ A full-stack web application for managing project data, client information, user
 
 ## Tech Stack
 
-- **Backend**: Appwrite (database, image storage, and authentication)
+- **Backend**: Appwrite (database, image storage, and authentication) and Express.
 - **Frontend**: React (UI components) with Tailwind CSS (styling)
 - **Deployment**:
   - Backend: [Render](https://render.com)
@@ -44,69 +55,65 @@ A full-stack web application for managing project data, client information, user
 
 ## Installation
 
-### Clone the Repository
+1. Clone the repository:
+    ```
+    git clone https://github.com/kishangupta4514/management-app.git
+    ```
+    
 
-```
-git clone https://github.com/your-username/management-app.git
-cd management-app
-```
+2. Install the project dependencies & run Frontend:
+    ```
+    cd web
+    npm install
+    npm run dev
+    ```
+    
+    
 
-## Backend Configuration
+3. Install the project dependencies & run the server:
+    ```
+    cd backend
+    npm install
+    node main.js
+    ```
+    
+    
 
-1. **Appwrite Setup**:
-   - **Install Appwrite**: Follow the [Appwrite installation guide](https://appwrite.io/docs) to set up Appwrite on a local server or in the cloud.
-   - **Create Collections**:
-     - **Projects Collection**:
-       - Fields: `name` (string), `description` (string), `image` (file).
-     - **Clients Collection**:
-       - Fields: `name` (string), `designation` (string), `description` (string), `image` (file).
-     - **Contacts Collection**:
-       - Fields: `full_name` (string), `email` (string), `phone` (string), `city` (string).
-     - **Subscriptions Collection**:
-       - Fields: `email` (string).
-   - **Configure Permissions**: In Appwrite’s dashboard, set permissions so that:
-     - Only authenticated users can access admin-related actions.
-     - Public access is granted to read-only data, such as the projects and clients list.
-
-2. **Deploy Backend on Render**:
-   - **Link Repository**: Connect your GitHub repository to [Render](https://render.com).
-   - **Environment Variables**:
-     - In Render's settings, add environment variables for secure communication, such as:
-       - `APPWRITE_PROJECT_ID`
-       - `APPWRITE_API_KEY`
-       - `APPWRITE_ENDPOINT`
-   - **Automatic Deployments**: Configure Render to automatically deploy the backend with each commit to the repository.
+4. Visit http://localhost:3000 to access the app.
 
 ---
 
-## Frontend Configuration
+## API Documentaion
 
-1. **Environment Variables**:
-   - In the `/frontend` directory, create a `.env` file and add the following variables to connect your frontend to Appwrite:
-     ```bash
-     REACT_APP_API_URL=<your-appwrite-api-url>
-     REACT_APP_PROJECT_ID=<your-appwrite-project-id>
-     ```
-   - Replace `<your-appwrite-api-url>` and `<your-appwrite-project-id>` with your Appwrite instance's actual values.
+## Authentication
+- **Admin Login**: `/admin/login` - `{ email, password }`
 
-2. **Install Dependencies**:
-   - In the `/frontend` directory, install required dependencies:
-     ```bash
-     cd frontend
-     npm install
-     ```
+## Clients API
+- **Create Client**: `/clients` - `{ name, description, designation, image (file) }`
+- **Get All Clients**: `/clients` - `[]`
+- **Get Client by ID**: `/clients/:id` - `{ name, description, designation, imgUrl }`
+- **Update Client**: `/clients/:id` - `{ name, description, designation, imgUrl (optional: file) }`
+- **Delete Client**: `/clients/:id` - `{ message: "Client deleted successfully" }`
 
-3. **Run the Frontend Locally**:
-   - Start the React development server:
-     ```bash
-     npm start
-     ```
-   - The application will run on `http://localhost:3000` by default.
+## Projects API
+- **Create Project**: `/projects` - `{ name, description, location, image (file) }`
+- **Get All Projects**: `/projects` - `[]`
+- **Get Project by ID**: `/projects/:id` - `{ name, description, location, imgUrl }`
+- **Update Project**: `/projects/:id` - `{ name, description, location, imgUrl (optional: file) }`
+- **Delete Project**: `/projects/:id` - `{ message: "Project deleted successfully" }`
 
-4. **Deploy Frontend on Vercel**:
-   - **Connect Repository**: Link your frontend repository to [Vercel](https://vercel.com).
-   - **Configure Environment Variables**: In Vercel’s dashboard, set environment variables to connect the frontend to Appwrite.
-   - **Deploy**: Vercel will automatically handle the build and deployment process after each commit.
+## Subscriptions API
+- **Create Subscription**: `/subscriptions` - `{ clientId, planName, startDate, endDate }`
+
+## Contact Form API
+- **Create Contact Form Response**: `/contact-form` - `{ fullName, email, mobile, location }`
+- **Get All Contact Form Responses**: `/get-contact-forms` - `[]`
+- **Get Contact Form Response by ID**: `/contact-form/:id` - `{ fullName, email, mobile, location }`
+- **Subscribe to Newsletter**: `/subscribe` - `{ email }`
+- **Get All Subscribed Emails**: `/get-subscriptions` - `[]`
+
+## Admin Routes
+- **Verify Admin Token**: `/verify` - `{}` (returns status 200 on success)
 
 ---
 
@@ -140,5 +147,10 @@ cd management-app
 - **Additional Admin Features**:
   - Allow bulk uploads of project and client data.
   - Implement a search and filter function in the admin panel to make it easier to manage large datasets.
+
+ ---
+ ## License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
 
